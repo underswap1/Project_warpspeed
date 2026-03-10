@@ -1,20 +1,66 @@
 plugins {
-    id 'java'
+    id 'fabric-loom' version '1.9.2'
+    id 'maven-publish'
 }
 
-group = 'org.example'
-version = '1.0-SNAPSHOT'
+group = "com.underswap1.projectwarpspeed"
+version = "1.0.0"
 
 repositories {
     mavenCentral()
+    maven { url = "https://maven.fabricmc.net/" }
 }
 
 dependencies {
-    testImplementation platform('org.junit:junit-bom:5.10.0')
-    testImplementation 'org.junit.jupiter:junit-jupiter'
-    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    // Minecraft + Yarn mappings
+    minecraft "com.mojang:minecraft:1.20.1"
+    mappings "net.fabricmc:yarn:1.20.1+build.10:v2"
+
+    // Latest Fabric Loader
+    modImplementation "net.fabricmc:fabric-loader:0.18.1"
+
+    // Latest Fabric API for 1.20.1
+    modImplementation "net.fabricmc.fabric-api:fabric-api:0.92.6+1.20.1"
 }
 
-test {
-    useJUnitPlatform()
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
+    withSourcesJar()
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = "UTF-8"
+    options.release = 17
+}
+
+loom {
+    runs {
+        client {
+            client()
+            ideConfigGenerated = true
+            runDir = "run"
+        }
+        server {
+            server()
+            ideConfigGenerated = true
+            runDir = "run"
+        }
+    }
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            artifactId = "project_warpspeed"
+            from components.java
+        }
+    }
+    repositories {
+        maven {
+            name = "local"
+            url = uri("file://${project.buildDir}/repo")
+        }
+    }
 }
