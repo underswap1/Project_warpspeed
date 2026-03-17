@@ -1,10 +1,13 @@
 package dev.underswap1.projectwarpspeed.materials;
 
 import com.mojang.brigadier.arguments.StringArgumentType;
+
+import dev.underswap1.projectwarpspeed.ProjectWarpspeed;
 import dev.underswap1.projectwarpspeed.materials.blocks.BlockFamilyMap;
 import dev.underswap1.projectwarpspeed.materials.blocks.BlockMaterialMap;
 import dev.underswap1.projectwarpspeed.materials.items.ItemMaterialMap;
 import dev.underswap1.projectwarpspeed.registry.MaterialRegistry;
+
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.command.ServerCommandSource;
@@ -17,6 +20,8 @@ import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.HitResult;
 import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 import static net.minecraft.server.command.CommandManager.argument;
@@ -27,7 +32,7 @@ public class MaterialCommands {
     public static void registerCommands() {
         CommandRegistrationCallback.EVENT.register((dispatcher, dedicated) -> {
 
-            // Command: /materialproperties <name>
+            // ---------------- MATERIAL PROPERTIES ----------------
             dispatcher.register(literal("materialproperties")
                     .then(argument("material", StringArgumentType.word())
                             .executes(context -> {
@@ -47,7 +52,7 @@ public class MaterialCommands {
                     )
             );
 
-            // Command: /blockproperties (gets the block you are looking at)
+            // ---------------- BLOCK PROPERTIES ----------------
             dispatcher.register(literal("blockproperties")
                     .executes(context -> {
                         ServerCommandSource source = context.getSource();
@@ -81,7 +86,8 @@ public class MaterialCommands {
                         return 1;
                     })
             );
-            // Command: /itemproperties (gets the item in your main hand)
+
+            // ---------------- ITEM PROPERTIES ----------------
             dispatcher.register(literal("itemproperties")
                     .executes(context -> {
                         ServerCommandSource source = context.getSource();
@@ -92,14 +98,12 @@ public class MaterialCommands {
                             return 1;
                         }
 
-                        // Get the item in the main hand
                         ItemStack stack = player.getMainHandStack();
                         if (stack.isEmpty()) {
                             source.sendFeedback(() -> Text.literal("You are not holding any item!").formatted(Formatting.RED), false);
                             return 1;
                         }
 
-                        // Get the material associated with the item
                         MaterialProperties material = getMaterialFromItem(stack);
                         if (material == null) {
                             source.sendFeedback(() ->
@@ -108,25 +112,187 @@ public class MaterialCommands {
                             source.sendFeedback(() ->
                                     Text.literal("Item: " + stack.getItem().getName().getString() +
                                             " uses material: " + material.name).formatted(Formatting.GOLD), false);
-
                             printMaterialProperties(source, material);
                         }
 
                         return 1;
                     })
             );
+
+            // ---------------- MAKE ALLOY ----------------
+            dispatcher.register(literal("make_alloy")
+                    .then(argument("args", StringArgumentType.greedyString())
+                            .executes(context -> {
+                                ServerCommandSource source = context.getSource();
+                                String rawArgs = StringArgumentType.getString(context, "args").toLowerCase().trim();
+                                String[] tokens = rawArgs.split("\\s+");
+
+                                if (tokens.length % 2 != 0) {
+                                    source.sendFeedback(() ->
+                                                    Text.literal("You must provide material-percentage pairs!").formatted(Formatting.RED),
+                                            false);
+                                    return 1;
+                                }
+
+                                List<String> materials = new ArrayList<>();
+                                List<Double> fractions = new ArrayList<>();
+                                double totalPercent = 0;
+
+                                for (int i = 0; i < tokens.length; i += 2) {
+                                    String matName = tokens[i];
+                                    MaterialProperties mat = MaterialRegistry.get(matName);
+                                    if (mat == null) {
+                                        source.sendFeedback(() ->
+                                                Text.literal("Material not found: " + matName).formatted(Formatting.RED), false);
+                                        return 1;
+                                    }
+
+                                    double pct;
+                                    try {
+                                        pct = Double.parseDouble(tokens[i + 1]);
+                                    } catch (NumberFormatException e) {
+                                        int finalI = i;
+                                        source.sendFeedback(() ->
+                                                Text.literal("Invalid percentage: " + tokens[finalI + 1]).formatted(Formatting.RED), false);
+                                        return 1;
+                                    }
+
+                                    if (pct < 0 || pct > 100) {
+                                        source.sendFeedback(() ->
+                                                Text.literal("Percentage must be between 0 and 100: " + pct).formatted(Formatting.RED), false);
+                                        return 1;
+                                    }
+
+                                    materials.add(mat.name);
+                                    fractions.add(pct / 100.0);
+                                    totalPercent += pct;
+                                }
+
+                                if (Math.abs(totalPercent - 100.0) > 0.001) {
+                                    double finalTotalPercent = totalPercent;
+                                    source.sendFeedback(() ->
+                                                    Text.literal("All percentages must sum to 100! Currently: " + finalTotalPercent).formatted(Formatting.RED),
+                                            false);
+                                    return 1;
+                                }
+
+                                MaterialProperties alloy = ProjectWarpspeed.ALLOY_GENERATOR.generateAlloy(materials, fractions);
+                                MaterialRegistry.register(alloy);
+
+                                source.sendFeedback(() ->
+                                        Text.literal("Alloy generated: " + alloy.name).formatted(Formatting.GREEN), false);
+                                printMaterialProperties(source, alloy);
+
+                                return 1;
+                            })
+                    )
+            );
+
+            // ---------------- LIST ALLOYS ----------------
+            dispatcher.register(literal("listalloys")
+                    .executes(context -> {
+                        ServerCommandSource source = context.getSource();
+                        var alloys = ProjectWarpspeed.ALLOY_GENERATOR.getGeneratedAlloys();
+
+                        if (alloys.isEmpty()) {
+                            source.sendFeedback(() ->
+                                    Text.literal("No alloys have been generated yet!").formatted(Formatting.RED), false);
+                            return 1;
+                        }
+
+                        source.sendFeedback(() ->
+                                Text.literal("=== Generated Alloys ===").formatted(Formatting.DARK_AQUA, Formatting.BOLD), false);
+
+                        for (var alloyJson : alloys) {
+                            String name = alloyJson.getAsJsonObject().get("name").getAsString();
+                            String symbol = alloyJson.getAsJsonObject().get("symbol").getAsString();
+                            source.sendFeedback(() ->
+                                    Text.literal("- " + name + " (" + symbol + ")").formatted(Formatting.GOLD), false);
+                        }
+
+                        return 1;
+                    })
+            );
+
+            // ---------------- ALLOY PROPERTIES ----------------
+            dispatcher.register(literal("alloyproperties")
+                    .then(argument("name", StringArgumentType.word())
+                            .executes(context -> {
+                                ServerCommandSource source = context.getSource();
+                                String alloyName = StringArgumentType.getString(context, "name").toLowerCase();
+
+                                MaterialProperties mat = MaterialRegistry.get(alloyName);
+                                if (mat == null || !mat.category.equals("alloy")) {
+                                    source.sendFeedback(() ->
+                                            Text.literal("Alloy not found: " + alloyName).formatted(Formatting.RED), false);
+                                    return 1;
+                                }
+
+                                source.sendFeedback(() ->
+                                        Text.literal("=== Alloy Info ===").formatted(Formatting.DARK_AQUA, Formatting.BOLD), false);
+                                printMaterialProperties(source, mat);
+                                return 1;
+                            })
+                    )
+            );
         });
     }
 
-    private static String formatNumber(double value) {
-        if (Math.abs(value) < 0.001) {          // very small numbers
-            return String.format("%.3E", value).replaceAll("\\.?0+$", "");
-        } else if (Math.abs(value) > 1000000){  // very big numbers
-            return String.format("%.3E", value).replaceAll("\\.?0+$", "");
-        } else {
-            return String.format("%.3E", value).replaceAll("\\.?0+$", "");
-        }
+    // ------------------ MATERIAL / BLOCK / ITEM UTILS ------------------
+
+    // Example function to get the material from a block
+    private static MaterialProperties getMaterialFromBlock(World world, BlockPos pos) {
+        Block block = world.getBlockState(pos).getBlock();
+        String family = BlockFamilyMap.getFamily(block);
+        if (family == null) return null;
+
+        BlockMaterialMap.BlockMaterialOverride override = BlockMaterialMap.get(block);
+        if (override == null) return null;
+
+        MaterialProperties base = MaterialRegistry.get(override.baseMaterial);
+        if (base == null) return null;
+
+        return applyOverride(base, override);
     }
+
+    private static MaterialProperties applyOverride(MaterialProperties base, BlockMaterialMap.BlockMaterialOverride override) {
+        return new MaterialProperties(
+                base.name,
+                base.symbol,
+                base.category,
+                base.phase_stp,
+                base.atomic_number,
+                base.atomic_mass,
+                override.electroconductivity != null ? override.electroconductivity : base.electroconductivity,
+                override.density20C != null ? override.density20C : base.density20C,
+                override.meltingPointK != null ? override.meltingPointK : base.meltingPointK,
+                override.boilingPointK != null ? override.boilingPointK : base.boilingPointK,
+                override.specificHeat != null ? override.specificHeat : base.specificHeat,
+                override.thermalConductivity != null ? override.thermalConductivity : base.thermalConductivity,
+                override.thermalExpansion != null ? override.thermalExpansion : base.thermalExpansion,
+                base.magneticType,
+                override.hardness != null ? override.hardness : base.hardness,
+                override.youngsModulus != null ? override.youngsModulus : base.youngsModulus,
+                override.poissonsRatio != null ? override.poissonsRatio : base.poissonsRatio,
+                override.toughness != null ? override.toughness : base.toughness,
+                override.ductility != null ? override.ductility : base.ductility
+        );
+    }
+
+    private static MaterialProperties getMaterialFromItem(ItemStack stack) {
+        ItemMaterialMap.ItemMaterialOverride override = ItemMaterialMap.get(stack.getItem());
+        if (override == null) return null;
+
+        MaterialProperties base =MaterialRegistry.get(override.baseMaterial);
+        if (base == null) return null;
+
+        if (base.category.equals("alloy")) {
+            return MaterialRegistry.get(base.name.toLowerCase());
+        }
+        return base;
+    }
+
+    // ------------------ PRINT UTIL ------------------
 
     // Print all material properties with color formatting
     private static void printMaterialProperties(ServerCommandSource source, MaterialProperties mat) {
@@ -250,50 +416,13 @@ public class MaterialCommands {
         );
     }
 
-    // Example function to get the material from a block
-    private static MaterialProperties getMaterialFromBlock(World world, BlockPos pos) {
-        Block block = world.getBlockState(pos).getBlock();
-        String family = BlockFamilyMap.getFamily(block);
-        if (family == null) return null;
-
-        BlockMaterialMap.BlockMaterialOverride override = BlockMaterialMap.get(block);
-        if (override == null) return null;
-
-// get base material
-        MaterialProperties base = MaterialRegistry.get(override.baseMaterial);
-        if (base == null) return null;
-
-// apply overrides
-        return applyOverride(base, override);
-    }
-
-    private static MaterialProperties applyOverride(MaterialProperties base, BlockMaterialMap.BlockMaterialOverride override) {
-        return new MaterialProperties(
-                base.name,
-                base.symbol,
-                base.category,
-                base.phase_stp,
-                base.atomic_number,
-                base.atomic_mass,
-                override.electroconductivity != null ? override.electroconductivity : base.electroconductivity,
-                override.density20C != null ? override.density20C : base.density20C,
-                override.meltingPointK != null ? override.meltingPointK : base.meltingPointK,
-                override.boilingPointK != null ? override.boilingPointK : base.boilingPointK,
-                override.specificHeat != null ? override.specificHeat : base.specificHeat,
-                override.thermalConductivity != null ? override.thermalConductivity : base.thermalConductivity,
-                override.thermalExpansion != null ? override.thermalExpansion : base.thermalExpansion,
-                base.magneticType,
-                override.hardness != null ? override.hardness : base.hardness,
-                override.youngsModulus != null ? override.youngsModulus : base.youngsModulus,
-                override.poissonsRatio != null ? override.poissonsRatio : base.poissonsRatio,
-                override.toughness != null ? override.toughness : base.toughness,
-                override.ductility != null ? override.ductility : base.ductility
-        );
-    }
-
-    private static MaterialProperties getMaterialFromItem(ItemStack stack) {
-        ItemMaterialMap.ItemMaterialOverride override = ItemMaterialMap.get(stack.getItem());
-        if (override == null) return null;
-        return MaterialRegistry.get(override.baseMaterial);
+    private static String formatNumber(double value) {
+        if (Math.abs(value) < 0.001) {          // very small numbers
+            return String.format("%.3E", value).replaceAll("\\.?0+$", "");
+        } else if (Math.abs(value) > 1000000) {  // very big numbers
+            return String.format("%.3E", value).replaceAll("\\.?0+$", "");
+        } else {
+            return String.format("%.3E", value).replaceAll("\\.?0+$", "");
+        }
     }
 }

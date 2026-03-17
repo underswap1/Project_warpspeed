@@ -7,12 +7,16 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
+import java.util.HashSet;
 
 public class MaterialRegistry {
 
     // Map of material name -> properties
     public static final Map<String, MaterialProperties> MATERIALS = new HashMap<>();
+    public static final Map<String, MaterialProperties> ALIASES = new HashMap<>();
 
+    @SuppressWarnings("CallToPrintStackTrace")
     public static void loadMaterials() {
 
         try (InputStream is = MaterialRegistry.class.getResourceAsStream(
@@ -40,6 +44,28 @@ public class MaterialRegistry {
     }
 
     public static MaterialProperties get(String name) {
-        return MATERIALS.get(name);
+        if (name == null) return null;
+        MaterialProperties mat = MATERIALS.get(name.toLowerCase());
+        if (mat != null) return mat;
+        return ALIASES.get(name.toLowerCase());
+    }
+
+    public static void register(MaterialProperties mat) {
+        if (mat != null && mat.name != null) {
+            MATERIALS.put(mat.name.toLowerCase(), mat);
+        }
+    }
+
+    public static void registerAlias(String alias, MaterialProperties mat) {
+        if (!ALIASES.containsKey(alias.toLowerCase())) {
+            ALIASES.put(alias.toLowerCase(), mat);
+        }
+    }
+
+    /** Returns all registered material names, including aliases, for tab completion */
+    public static Set<String> getAllMaterialNames() {
+        Set<String> names = new HashSet<>(MATERIALS.keySet());
+        names.addAll(ALIASES.keySet());
+        return names;
     }
 }

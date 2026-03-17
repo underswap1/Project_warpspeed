@@ -8,6 +8,7 @@ import java.util.Map;
 
 public class ItemMaterialMap {
 
+    @SuppressWarnings("unused")
     public static class ItemMaterialOverride {
         public final String baseMaterial;
         public Double density20C = null;
@@ -22,6 +23,7 @@ public class ItemMaterialMap {
         public Double poissonsRatio = null;
         public Double toughness = null;
         public Double ductility = null;
+
 
         private ItemMaterialOverride(String baseMaterial) {
             this.baseMaterial = baseMaterial;
@@ -66,6 +68,7 @@ public class ItemMaterialMap {
         ITEM_OVERRIDES.put(Items.COPPER_INGOT, ItemMaterialMap.ItemMaterialOverride.of("copper"));
     }
 
+    @SuppressWarnings("unused")
     public static ItemMaterialOverride getMaterialName(Item item) {
         return ITEM_OVERRIDES.get(item);
     }
@@ -84,6 +87,7 @@ public class ItemMaterialMap {
         // 3. No override found
         return null;
     }
+    @SuppressWarnings("unused")
     public static ItemMaterialMap.ItemMaterialOverride get(String family) {
         return FAMILY_OVERRIDES.get(family);
     }

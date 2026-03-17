@@ -7,6 +7,7 @@ import java.util.Map;
 
 public class BlockMaterialMap {
 
+    @SuppressWarnings("unused")
     public static class BlockMaterialOverride {
         public final String baseMaterial;
         public Double density20C = null;
@@ -80,6 +81,7 @@ public class BlockMaterialMap {
         // 3. No override found
         return null;
     }
+    @SuppressWarnings("unused")
     public static BlockMaterialOverride get(String family) {
         return FAMILY_OVERRIDES.get(family);
     }

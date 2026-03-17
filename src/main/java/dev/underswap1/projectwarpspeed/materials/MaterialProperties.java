@@ -1,5 +1,8 @@
 package dev.underswap1.projectwarpspeed.materials;
 
+import java.util.Map;
+
+@SuppressWarnings("unused")
 public class MaterialProperties {
 
     public final String name;
@@ -94,11 +97,67 @@ public class MaterialProperties {
         this.toughness = other.toughness;
         this.ductility = other.ductility;
     }
-
-    /**
-     * Returns the density at the given temperature (°C)
-     */
+    // calculates temperature at a given temperature of a material
     public double getDensity(double temperatureC) {
         return density20C / (1 + thermalExpansion * (temperatureC - 20));
     }
+    //
+    static final Map<String, Double> ATOMIC_RADIUS_PM = Map.<String, Double>ofEntries(
+            Map.entry("H", 53.0),
+            Map.entry("He", 31.0),
+            Map.entry("Li", 167.0),
+            Map.entry("Be", 112.0),
+            Map.entry("B", 87.0),
+            Map.entry("C", 67.0),
+            Map.entry("N", 56.0),
+            Map.entry("O", 48.0),
+            Map.entry("F", 42.0),
+            Map.entry("Ne", 38.0),
+            Map.entry("Na", 190.0),
+            Map.entry("Mg", 145.0),
+            Map.entry("Al", 118.0),
+            Map.entry("Si", 111.0),
+            Map.entry("P", 98.0),
+            Map.entry("S", 88.0),
+            Map.entry("Cl", 79.0),
+            Map.entry("Ar", 71.0),
+            Map.entry("K", 243.0),
+            Map.entry("Ca", 194.0),
+            Map.entry("Sc", 184.0),
+            Map.entry("Ti", 176.0),
+            Map.entry("V", 171.0),
+            Map.entry("Cr", 166.0),
+            Map.entry("Mn", 161.0),
+            Map.entry("Fe", 156.0),
+            Map.entry("Co", 152.0),
+            Map.entry("Ni", 149.0),
+            Map.entry("Cu", 145.0),
+            Map.entry("Zn", 142.0),
+            Map.entry("Ga", 136.0),
+            Map.entry("Ge", 125.0),
+            Map.entry("As", 114.0),
+            Map.entry("Se", 103.0),
+            Map.entry("Br", 94.0),
+            Map.entry("Kr", 88.0),
+            Map.entry("Rb", 265.0),
+            Map.entry("Sr", 215.0),
+            Map.entry("Y", 212.0),
+            Map.entry("Zr", 206.0),
+            Map.entry("Nb", 198.0),
+            Map.entry("Mo", 190.0),
+            Map.entry("Tc", 183.0),
+            Map.entry("Ru", 178.0),
+            Map.entry("Rh", 173.0),
+            Map.entry("Pd", 169.0),
+            Map.entry("Ag", 165.0),
+            Map.entry("Cd", 161.0),
+            Map.entry("In", 156.0),
+            Map.entry("Sn", 145.0),
+            Map.entry("Sb", 133.0),
+            Map.entry("Te", 123.0),
+            Map.entry("I", 115.0),
+            Map.entry("Xe", 108.0),
+            Map.entry("Cs", 260.0),
+            Map.entry("Ba", 215.0)
+    );
 }
