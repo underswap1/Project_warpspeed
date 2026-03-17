@@ -21,6 +21,9 @@ dependencies {
 
     // Latest Fabric API for 1.20.1
     modImplementation "net.fabricmc.fabric-api:fabric-api:0.92.6+1.20.1"
+
+    // JSON implementation
+    implementation "com.google.code.gson:gson:2.10.1"
 }
 
 java {
@@ -53,7 +56,7 @@ loom {
 publishing {
     publications {
         mavenJava(MavenPublication) {
-            artifactId = "project_warpspeed"
+            artifactId = "project_warpspeed" as Publication
             from components.java
         }
     }
