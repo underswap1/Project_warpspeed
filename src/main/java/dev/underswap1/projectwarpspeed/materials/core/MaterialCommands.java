@@ -1,24 +1,22 @@
-package dev.underswap1.projectwarpspeed.materials;
+package dev.underswap1.projectwarpspeed.materials.core;
 
 import com.mojang.brigadier.arguments.StringArgumentType;
-
 import dev.underswap1.projectwarpspeed.ProjectWarpspeed;
 import dev.underswap1.projectwarpspeed.materials.blocks.BlockFamilyMap;
 import dev.underswap1.projectwarpspeed.materials.blocks.BlockMaterialMap;
 import dev.underswap1.projectwarpspeed.materials.items.ItemMaterialMap;
 import dev.underswap1.projectwarpspeed.registry.MaterialRegistry;
-
+import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.minecraft.block.Block;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.HitResult;
-import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,7 +28,7 @@ import static net.minecraft.server.command.CommandManager.literal;
 public class MaterialCommands {
 
     public static void registerCommands() {
-        CommandRegistrationCallback.EVENT.register((dispatcher, dedicated) -> {
+        CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> {
 
             // ---------------- MATERIAL PROPERTIES ----------------
             dispatcher.register(literal("materialproperties")
@@ -168,7 +166,7 @@ public class MaterialCommands {
                                     totalPercent += pct;
                                 }
 
-                                if (Math.abs(totalPercent - 100.0) > 0.001) {
+                                if (Math.abs(totalPercent - 100.0) > 0.01) {
                                     double finalTotalPercent = totalPercent;
                                     source.sendFeedback(() ->
                                                     Text.literal("All percentages must sum to 100! Currently: " + finalTotalPercent).formatted(Formatting.RED),
@@ -177,7 +175,6 @@ public class MaterialCommands {
                                 }
 
                                 MaterialProperties alloy = ProjectWarpspeed.ALLOY_GENERATOR.generateAlloy(materials, fractions);
-                                MaterialRegistry.register(alloy);
 
                                 source.sendFeedback(() ->
                                         Text.literal("Alloy generated: " + alloy.name).formatted(Formatting.GREEN), false);
@@ -240,7 +237,6 @@ public class MaterialCommands {
 
     // ------------------ MATERIAL / BLOCK / ITEM UTILS ------------------
 
-    // Example function to get the material from a block
     private static MaterialProperties getMaterialFromBlock(World world, BlockPos pos) {
         Block block = world.getBlockState(pos).getBlock();
         String family = BlockFamilyMap.getFamily(block);
@@ -417,12 +413,10 @@ public class MaterialCommands {
     }
 
     private static String formatNumber(double value) {
-        if (Math.abs(value) < 0.001) {          // very small numbers
-            return String.format("%.3E", value).replaceAll("\\.?0+$", "");
-        } else if (Math.abs(value) > 1000000) {  // very big numbers
-            return String.format("%.3E", value).replaceAll("\\.?0+$", "");
+        if (Math.abs(value) < 0.001 || Math.abs(value) > 1000000) {          // very small numbers
+            return String.format("%.3E", value).replaceAll("\\.?0+E", "E");
         } else {
-            return String.format("%.3E", value).replaceAll("\\.?0+$", "");
+            return String.format("%.3f", value).replaceAll("\\.?0+$", "");
         }
     }
 }
