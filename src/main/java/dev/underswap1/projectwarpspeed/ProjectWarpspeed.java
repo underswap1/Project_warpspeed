@@ -1,10 +1,12 @@
 package dev.underswap1.projectwarpspeed;
 
-import dev.underswap1.projectwarpspeed.materials.AlloyGenerator;
-import dev.underswap1.projectwarpspeed.materials.MaterialCommands;
+import dev.underswap1.projectwarpspeed.blockentity.ProjectWarpspeedBlockEntities;
+import dev.underswap1.projectwarpspeed.blocks.ProjectWarpspeedBlocks;
+import dev.underswap1.projectwarpspeed.materials.core.AlloyGenerator;
+import dev.underswap1.projectwarpspeed.materials.core.MaterialCommands;
 import dev.underswap1.projectwarpspeed.registry.MaterialRegistry;
-import dev.underswap1.projectwarpspeed.registry.ProjectWarpspeedBiomes;
 import dev.underswap1.projectwarpspeed.registry.ProjectWarpspeedEffects;
+import dev.underswap1.projectwarpspeed.registry.ProjectWarpspeedItemGroups;
 import net.fabricmc.api.ModInitializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,9 +20,12 @@ public class ProjectWarpspeed implements ModInitializer {
     public void onInitialize() {
         LOGGER.info("Project Warpspeed initialized by underswap1!");
         ProjectWarpspeedEffects.registerALL();
-        ProjectWarpspeedBiomes.registerAll();
-        ProjectWarpspeedBiomes.createBiomes();
+        ProjectWarpspeedBlocks.registerAll();
+        dev.underswap1.projectwarpspeed.items.ProjectWarpspeedItems.registerAll();
+        ProjectWarpspeedBlockEntities.registerAll();
+        ProjectWarpspeedItemGroups.registerAll();
         MaterialRegistry.loadMaterials();
+        MaterialRegistry.registerAllItems();
         ALLOY_GENERATOR = new AlloyGenerator();
         MaterialCommands.registerCommands();
     }
