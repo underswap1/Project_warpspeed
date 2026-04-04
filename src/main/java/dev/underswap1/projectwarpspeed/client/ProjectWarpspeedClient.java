@@ -1,7 +1,7 @@
 package dev.underswap1.projectwarpspeed.client;
 
-import net.fabricmc.api.ClientModInitializer;
 import dev.underswap1.projectwarpspeed.ProjectWarpspeed;
+import net.fabricmc.api.ClientModInitializer;
 
 public class ProjectWarpspeedClient implements ClientModInitializer {
     @Override
