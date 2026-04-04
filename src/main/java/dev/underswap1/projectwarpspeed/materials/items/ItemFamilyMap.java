@@ -25,7 +25,7 @@ public class ItemFamilyMap {
         String iron = "IRON";
         ITEM_TO_FAMILY.put(Items.IRON_INGOT, iron);
         ITEM_TO_FAMILY.put(Items.RAW_IRON, iron);
-        ITEM_TO_FAMILY.put(Items.RAW_GOLD_BLOCK, iron);
+        ITEM_TO_FAMILY.put(Items.RAW_IRON_BLOCK, iron);
         ITEM_TO_FAMILY.put(Items.IRON_NUGGET, iron);
         ITEM_TO_FAMILY.put(Items.IRON_BLOCK, iron);
         ITEM_TO_FAMILY.put(Items.IRON_AXE, iron);
