@@ -3,12 +3,13 @@ plugins {
     id 'maven-publish'
 }
 
-group = "com.underswap1.projectwarpspeed"
+group = "dev.underswap1.projectwarpspeed"
 version = "1.0.0"
 
 repositories {
     mavenCentral()
     maven { url = "https://maven.fabricmc.net/" }
+    maven { url = "https://repo.spongepowered.org/repository/maven-public/" }
 }
 
 dependencies {
@@ -16,20 +17,21 @@ dependencies {
     minecraft "com.mojang:minecraft:1.20.1"
     mappings "net.fabricmc:yarn:1.20.1+build.10:v2"
 
-    // Latest Fabric Loader
-    modImplementation "net.fabricmc:fabric-loader:0.18.1"
+    // Fabric Loader
+    modImplementation "net.fabricmc:fabric-loader:0.16.10"
 
-    // Latest Fabric API for 1.20.1
+    // Fabric API for 1.20.1
     modImplementation "net.fabricmc.fabric-api:fabric-api:0.92.6+1.20.1"
 
-    // JSON implementation
+    // JSON
     implementation "com.google.code.gson:gson:2.10.1"
-}
 
+    // TerraBlender
+    modCompileOnly files("libs/TerraBlender-fabric-1.20.1-3.0.0.169.jar")
+}
 java {
-    toolchain {
-        languageVersion = JavaLanguageVersion.of(17)
-    }
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
     withSourcesJar()
 }
 
@@ -49,21 +51,6 @@ loom {
             server()
             ideConfigGenerated = true
             runDir = "run"
-        }
-    }
-}
-
-publishing {
-    publications {
-        mavenJava(MavenPublication) {
-            artifactId = "project_warpspeed" as Publication
-            from components.java
-        }
-    }
-    repositories {
-        maven {
-            name = "local"
-            url = uri("file://${project.buildDir}/repo")
         }
     }
 }
