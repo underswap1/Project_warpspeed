@@ -7,8 +7,10 @@
       <w>blockproperties</w>
       <w>defs</w>
       <w>electrum</w>
+      <w>fabricloader</w>
       <w>ferro</w>
       <w>hadfield</w>
+      <w>hmix</w>
       <w>itemproperties</w>
       <w>kovar</w>
       <w>lanthanide</w>
@@ -21,7 +23,10 @@
       <w>poissons</w>
       <w>projectwarpspeed</w>
       <w>raycast</w>
+      <w>reuss</w>
+      <w>terrablender</w>
       <w>underswap</w>
+      <w>voigt</w>
       <w>youngs</w>
     </words>
   </dictionary>
