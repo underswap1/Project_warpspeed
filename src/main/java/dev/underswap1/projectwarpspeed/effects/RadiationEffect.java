@@ -1,8 +1,9 @@
 package dev.underswap1.projectwarpspeed.effects;
 
+import dev.underswap1.projectwarpspeed.registry.ProjectWarpspeedDamageTypes;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.entity.effect.StatusEffectCategory;
-import net.minecraft.entity.LivingEntity;
 
 public class RadiationEffect extends StatusEffect {
     public RadiationEffect() {
@@ -11,7 +12,7 @@ public class RadiationEffect extends StatusEffect {
 
     @Override
     public void applyUpdateEffect(LivingEntity entity, int amplifier) {
-        entity.damage(entity.getWorld().getDamageSources().magic(), 1.0F + amplifier);
+        entity.damage(ProjectWarpspeedDamageTypes.radiation(entity), 1.0F + amplifier);
     }
 
     @Override
