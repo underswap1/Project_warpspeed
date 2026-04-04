@@ -1,0 +1,22 @@
+{
+  "replace": false,
+  "values": [
+    "project_warpspeed:flooded_tropical_forest",
+    "project_warpspeed:lowland_rainforest",
+    "project_warpspeed:tropical_peat_swamp",
+    "project_warpspeed:coastal_rainforest",
+    "project_warpspeed:dry_deciduous_forest",
+    "project_warpspeed:hill_dipterocarp_forest",
+    "project_warpspeed:subtropical_broadleaf_forest",
+    "project_warpspeed:oak_hickory_forest",
+    "project_warpspeed:beech_fir_forest",
+    "project_warpspeed:larch_forest",
+    "project_warpspeed:temperate_rainforest",
+    "project_warpspeed:montane_forest",
+    "project_warpspeed:bamboo_forest",
+    "project_warpspeed:cloud_forest",
+    "project_warpspeed:subalpine_mixed_forest",
+    "project_warpspeed:wet_broadleaf_forest"
+  ]
+}
+
