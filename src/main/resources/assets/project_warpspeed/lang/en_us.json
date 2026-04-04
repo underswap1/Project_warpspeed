@@ -1,0 +1,6 @@
+{
+  "effect.projectwarpspeed.radiation": "Radiation",
+  "death.attack.radiation": "%1$s succumbed to radiation poisoning",
+  "death.attack.radiation.player": "%1$s was irradiated by %2$s",
+  "itemgroup.project_warpspeed.parts": "Project Warpspeed Parts"
+}
