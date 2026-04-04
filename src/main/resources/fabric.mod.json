@@ -1,9 +1,9 @@
 {
   "schemaVersion": 1,
   "id": "project_warpspeed",
-  "version": "${version}",
+  "version": "1.0.0",
   "name": "Project Warpspeed",
-  "description": "Adds a custom star system and planetary travel",
+  "description": "Adds anything you can think of",
   "authors": ["underswap1"],
   "license": "MIT",
   "environment": "*",
@@ -12,8 +12,9 @@
     "client": ["dev.underswap1.projectwarpspeed.client.ProjectWarpspeedClient"]
   },
   "depends": {
-    "fabricloader": ">=0.15.0",
-    "fabric": "*",
-    "minecraft": "1.20.1"
+    "fabricloader": ">=0.16.10",
+    "fabric-api": "*",
+    "minecraft": "1.20.1",
+    "terrablender": "*"
   }
 }
