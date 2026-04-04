@@ -681,8 +681,8 @@
       "atomic_mass": 74.922,
       "electroconductivity": 3.5e4,
       "density20C": 5750,
-      "meltingPointK": 1090,
-      "boilingPointK": 887,
+      "meltingPointK": 887,
+      "boilingPointK": 1090,
       "specificHeat": 329,
       "thermalConductivity": 50,
       "thermalExpansion": 1.2e-5,
@@ -1775,7 +1775,7 @@
       "density20C": 7200,
       "meltingPointK": 575,
       "boilingPointK": 610,
-      "specificHeat": 0.33,
+      "specificHeat": 330,
       "thermalConductivity": 0.5,
       "thermalExpansion": 3.0e-5,
       "magneticType": "diamagnetic",
@@ -2477,6 +2477,27 @@
       "poissonsRatio": 0,
       "toughness": 0,
       "ductility": 0
+    },
+    {
+      "name": "netherite",
+      "symbol": "Nt",
+      "category": "alloy",
+      "phase_stp": "solid",
+      "atomic_number": 0,
+      "atomic_mass": 0,
+      "electroconductivity": 2.5e6,
+      "density20C": 19600,
+      "meltingPointK": 2400,
+      "boilingPointK": 4500,
+      "specificHeat": 120,
+      "thermalConductivity": 45,
+      "thermalExpansion": 5e-6,
+      "magneticType": "paramagnetic",
+      "hardness": 9.0,
+      "youngsModulus": 250,
+      "poissonsRatio": 0.30,
+      "toughness": 400,
+      "ductility": 10
     }
   ]
 }
