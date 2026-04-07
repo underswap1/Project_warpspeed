@@ -1,5 +1,6 @@
 package dev.underswap1.projectwarpspeed.items;
 
+import dev.underswap1.projectwarpspeed.ProjectWarpspeed;
 import dev.underswap1.projectwarpspeed.blocks.ProjectWarpspeedBlocks;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.minecraft.item.BlockItem;
@@ -10,6 +11,7 @@ import net.minecraft.util.Identifier;
 
 public class ProjectWarpspeedItems {
     public static Item STEAM_BOILER_ITEM;
+    public static Item MACHINE_BLOCK;
 
     public static void registerAll() {
         STEAM_BOILER_ITEM = Registry.register(
@@ -18,5 +20,10 @@ public class ProjectWarpspeedItems {
                 new BlockItem(ProjectWarpspeedBlocks.STEAM_BOILER, new FabricItemSettings())
         );
 
+        MACHINE_BLOCK = Registry.register(
+                Registries.ITEM,
+                new Identifier(ProjectWarpspeed.MOD_ID, "machine_block"),
+                new BlockItem(ProjectWarpspeedBlocks.MACHINE_BLOCK, new FabricItemSettings())
+        );
     }
 }
