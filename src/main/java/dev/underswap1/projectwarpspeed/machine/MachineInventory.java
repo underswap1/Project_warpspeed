@@ -17,4 +17,8 @@ public class MachineInventory {
     public Iterable<MachinePart> getParts() {
         return parts.values();
     }
+
+    public void clear() {
+        parts.clear();
+    }
 }
