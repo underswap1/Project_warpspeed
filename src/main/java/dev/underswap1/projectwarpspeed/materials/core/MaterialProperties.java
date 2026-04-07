@@ -198,7 +198,7 @@ public class MaterialProperties {
             Map.entry("Np", 175.0),
             Map.entry("Pu", 175.0),
             Map.entry("Am", 173.0),
-            Map.entry("Cm", 173.0)
+            Map.entry("Cm", 173.00)
     );
 
     static final Map<String, Double> ELECTRONEGATIVITY = Map.<String, Double>ofEntries(
