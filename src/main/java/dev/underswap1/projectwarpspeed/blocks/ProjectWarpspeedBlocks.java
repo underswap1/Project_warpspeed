@@ -17,7 +17,7 @@ public class ProjectWarpspeedBlocks {
         MACHINE_BLOCK = Registry.register(
                 Registries.BLOCK,
                 new Identifier(ProjectWarpspeed.MOD_ID, "machine_block"),
-                new Block(FabricBlockSettings.create()
+                new MachineBlock(FabricBlockSettings.create()
                         .strength(4.0f)
                         .requiresTool()
                         .sounds(BlockSoundGroup.METAL)
