@@ -89,12 +89,21 @@ public class MaterialRegistry {
         System.out.println("Registered " + PART_ITEMS.size() + " material part items.");
     }
 
-    private static void registerItemsForMaterial(String matKey, MaterialProperties mat) {
+    private static final Set<String> NEVER_USE = Set.of(
+            "H","He","N","O","F","Ne","Cl","Ar","Kr","Xe","Rn","Og",
+            "Br","Hg",
+            "Li","Na","K","Rb","Cs","Fr",
+            "Ca","Sr","Ba","Ra",
+            "Tc","Pm","Po","At",
+            "Ac","Pa","Np","Pu","Am","Cm","Bk","Cf","Es","Fm","Md","No","Lr"
+    );
 
+    private static void registerItemsForMaterial(String matKey, MaterialProperties mat) {
         if (mat.meltingPointK < 300) {
             System.out.println("Skipping part generation for " + mat.name + " (melting point too low)");
             return;
         }
+        if (NEVER_USE.contains(mat.symbol)) return;
 
         for (MachinePartType part : MachinePartType.values()) {
             String id = matKey + "_" + part.name().toLowerCase();
