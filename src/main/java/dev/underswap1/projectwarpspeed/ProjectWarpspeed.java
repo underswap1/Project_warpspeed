@@ -7,6 +7,7 @@ import dev.underswap1.projectwarpspeed.materials.core.MaterialCommands;
 import dev.underswap1.projectwarpspeed.registry.MaterialRegistry;
 import dev.underswap1.projectwarpspeed.registry.ProjectWarpspeedEffects;
 import dev.underswap1.projectwarpspeed.registry.ProjectWarpspeedItemGroups;
+import dev.underswap1.projectwarpspeed.registry.ProjectWarpspeedScreenHandlers;
 import net.fabricmc.api.ModInitializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,6 +25,7 @@ public class ProjectWarpspeed implements ModInitializer {
         dev.underswap1.projectwarpspeed.items.ProjectWarpspeedItems.registerAll();
         ProjectWarpspeedBlockEntities.registerAll();
         ProjectWarpspeedItemGroups.registerAll();
+        ProjectWarpspeedScreenHandlers.registerAll();
         MaterialRegistry.loadMaterials();
         MaterialRegistry.registerAllItems();
         ALLOY_GENERATOR = new AlloyGenerator();
