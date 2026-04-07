@@ -111,5 +111,69 @@ public class MachineStats {
         return magnetism;
     }
 
+    public static double getRigidity(MachineInventory inv) {
+        double rigidity = 0;
+        for (MachinePart part : inv.getParts()) {
+            if (part == null) continue;
+            MaterialProperties m = part.material();
+            switch (part.type()) {
+                case FRAME, BEAM, COLUMN, SUPPORT, BRACKET, CHANNEL, BASE ->
+                        rigidity += m.youngsModulus * Math.sqrt(m.density20C);
+            }
+        }
+        return rigidity;
+    }
+
+    public static double getFastenerStrength(MachineInventory inv) {
+        double strength = 0;
+        for (MachinePart part : inv.getParts()) {
+            if (part == null) continue;
+            MaterialProperties m = part.material();
+            switch (part.type()) {
+                case BOLT, SCREW, NUT, RIVET, PIN, DOWEL, RETAINER, CLEVIS ->
+                        strength += m.toughness * m.hardness;
+            }
+        }
+        return strength;
+    }
+
+    public static double getRotationalInertia(MachineInventory inv) {
+        double inertia = 0;
+        for (MachinePart part : inv.getParts()) {
+            if (part == null) continue;
+            MaterialProperties m = part.material();
+            switch (part.type()) {
+                case FLYWHEEL, SPROCKET, PULLEY, ROTOR_CORE, ARMATURE ->
+                        inertia += m.density20C * m.hardness * 0.1;
+            }
+        }
+        return inertia;
+    }
+
+    public static double getCuttingPower(MachineInventory inv) {
+        double power = 0;
+        for (MachinePart part : inv.getParts()) {
+            if (part == null) continue;
+            MaterialProperties m = part.material();
+            switch (part.type()) {
+                case CUTTER, DRILL, GRINDER, MILL, PRESS, DIE, STAMPER ->
+                        power += m.hardness * Math.sqrt(m.toughness);
+            }
+        }
+        return power;
+    }
+
+    public static double getDampening(MachineInventory inv) {
+        double damp = 0;
+        for (MachinePart part : inv.getParts()) {
+            if (part == null) continue;
+            MaterialProperties m = part.material();
+            switch (part.type()) {
+                case DAMPING_PAD, BUFFER, GASKET, SEAL, INSULATION ->
+                        damp += m.ductility * m.density20C * 0.1;
+            }
+        }
+        return damp;
+    }
 
 }
