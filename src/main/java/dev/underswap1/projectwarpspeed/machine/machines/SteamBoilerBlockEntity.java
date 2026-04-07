@@ -9,6 +9,7 @@ import net.minecraft.util.math.BlockPos;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class SteamBoilerBlockEntity extends BlockEntity {
 
@@ -17,36 +18,19 @@ public class SteamBoilerBlockEntity extends BlockEntity {
 
     public SteamBoilerBlockEntity(BlockPos pos, BlockState state) {
         super(ProjectWarpspeedBlockEntities.STEAM_BOILER, pos, state);
-        setupDefaultParts();
+        setupDefaultPartsFromRecipe();
     }
 
-    /** Initialize with 36 realistic boiler parts */
-    private void setupDefaultParts() {
-        // Structural (12)
-        addPart(MachinePartType.PLATE, 8);
-        addPart(MachinePartType.REINFORCED_PLATE, 2);
-        addPart(MachinePartType.SUPPORT, 2);
+    public void setupDefaultPartsFromRecipe() {
+        inventory.clear();
+        installedParts.clear();
 
-        // Fasteners (8)
-        addPart(MachinePartType.BOLT, 4);
-        addPart(MachinePartType.RIVET, 2);
-        addPart(MachinePartType.BRACKET, 2);
-
-        // Pressure / Fluid Core (8)
-        addPart(MachinePartType.PIPE, 3);
-        addPart(MachinePartType.VALVE, 2);
-        addPart(MachinePartType.CYLINDER, 1);
-        addPart(MachinePartType.PISTON, 1);
-        addPart(MachinePartType.MANIFOLD, 1);
-
-        // Thermal System (5)
-        addPart(MachinePartType.COIL, 2);
-        addPart(MachinePartType.HEATING_ELEMENT, 1);
-        addPart(MachinePartType.BURNER, 1);
-        addPart(MachinePartType.THERMAL_LINING, 1);
+        for (Map.Entry<MachinePartType, Integer> entry : SteamBoilerRecipe.REQUIRED.entrySet()) {
+            addPart(entry.getKey(), entry.getValue());
+        }
     }
 
-    /** Helper to add multiple copies of the same part type */
+
     private void addPart(MachinePartType type, int count) {
         for (int i = 0; i < count; i++) {
             MachinePart part = new MachinePart(type, MaterialProperties.DEFAULT_METAL);
@@ -63,7 +47,6 @@ public class SteamBoilerBlockEntity extends BlockEntity {
         return installedParts;
     }
 
-    /** Calculate real-time stats from MachineInventory */
     public SteamBoilerStats calculateStats() {
         SteamBoilerStats stats = new SteamBoilerStats();
         stats.pressureLimit = MachineStats.getPressureLimit(inventory);
